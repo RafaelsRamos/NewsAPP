@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">NewsAPP</string>
     <string name="title_activity_private_area">PrivateAreaActivity</string>
@@ -5,14 +6,8 @@
     This string is used for square devices and overridden by hello_world in
     values-round/strings.xml for round devices.
     -->
-    <string name="hello_world">Hello Square World!</string>
+    <string name="hello_world">Hey mundo!</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
-    <string name="my_test_string">Test String</string>
-
-    <string-array name="Languages">
-        <item>English</item>
-        <item>Português</item>
-    </string-array>
+    <string name="hello_blank_fragment">Boas, fragmento em branco!</string>
+    <string name="my_test_string">Teste PT</string>
 </resources>

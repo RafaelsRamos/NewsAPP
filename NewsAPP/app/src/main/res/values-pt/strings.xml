@@ -2,12 +2,6 @@
 <resources>
     <string name="app_name">NewsAPP</string>
     <string name="title_activity_private_area">PrivateAreaActivity</string>
-    <!--
-    This string is used for square devices and overridden by hello_world in
-    values-round/strings.xml for round devices.
-    -->
-    <string name="hello_world">Hey mundo!</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Boas, fragmento em branco!</string>
-    <string name="my_test_string">Teste PT</string>
+    <string name="full_article">Artigo completo</string>
+
 </resources>

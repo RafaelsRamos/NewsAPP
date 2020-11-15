@@ -78,6 +78,9 @@ class PrivateAreaActivity : FragmentActivity() {
             .commit()
     }
 
+    /**
+     * Redirect to given url
+     */
     fun redirect(url: String) {
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         startActivity(browserIntent)

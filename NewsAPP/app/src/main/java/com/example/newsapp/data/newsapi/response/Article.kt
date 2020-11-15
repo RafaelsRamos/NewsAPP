@@ -4,6 +4,7 @@ package com.example.newsapp.data.newsapi.response
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
+@kotlinx.serialization.Serializable
 data class Article(
     @SerializedName("author")
     val author: String,
@@ -21,4 +22,4 @@ data class Article(
     val url: String,
     @SerializedName("urlToImage")
     val urlToImage: String
-): Serializable
+)

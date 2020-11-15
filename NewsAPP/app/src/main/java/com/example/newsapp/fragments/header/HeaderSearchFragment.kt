@@ -22,6 +22,8 @@ class HeaderSearchFragment: GenericFragment() {
 
     override fun readSavedInstanceState() { }
 
+    override fun saveInstanceState() { }
+
     override fun createView(view: View) {
         search_iv.setOnClickListener {
             isAnimationOngoing = true

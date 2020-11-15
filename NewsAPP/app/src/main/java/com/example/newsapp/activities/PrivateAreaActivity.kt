@@ -1,5 +1,7 @@
 package com.example.newsapp.activities
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.IdRes
@@ -21,6 +23,7 @@ class PrivateAreaActivity : FragmentActivity() {
         setContentView(R.layout.activity_private_area)
         setConfigurations()
 
+        //redirect("http://www.google.com")
         setHeader()
         setBottomNavigation()
 
@@ -28,14 +31,7 @@ class PrivateAreaActivity : FragmentActivity() {
         loadFragment(NewsFragment())
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        if (supportFragmentManager.backStackEntryCount > 0) {
-            supportFragmentManager.popBackStackImmediate()
-        } else {
-            super.onBackPressed()
-        }
-    }
+
 
     private fun setHeader() {
         loadWithoutAddingToBackStack(HeaderSearchFragment(), R.id.headerFrameLayout)
@@ -63,13 +59,6 @@ class PrivateAreaActivity : FragmentActivity() {
     }
 
     /**
-     * Unload Main fragment and restores the previous one
-     */
-    fun unloadCentralFragment() {
-        supportFragmentManager.popBackStackImmediate()
-    }
-
-    /**
      * Load given GenericFragment into the passed container id
      * @param fragment      Given fragment
      * @param containerId   Target container ID
@@ -77,15 +66,20 @@ class PrivateAreaActivity : FragmentActivity() {
     private fun loadFragment(fragment: GenericFragment, @IdRes containerId: Int) {
         supportFragmentManager
             .beginTransaction()
-            .add(containerId, fragment, fragment.TAG)
+            .replace(containerId, fragment)
             .addToBackStack(BACK_STACK_ROOT_TAG)
             .commit()
     }
 
-    private fun loadWithoutAddingToBackStack(fragment: GenericFragment, @IdRes containerId:Int) {
+    private fun loadWithoutAddingToBackStack(fragment: GenericFragment, @IdRes containerId: Int) {
         supportFragmentManager
             .beginTransaction()
             .add(containerId, fragment, fragment.TAG)
             .commit()
+    }
+
+    fun redirect(url: String) {
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        startActivity(browserIntent)
     }
 }

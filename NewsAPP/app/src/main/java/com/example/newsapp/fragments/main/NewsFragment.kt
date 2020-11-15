@@ -1,5 +1,6 @@
 package com.example.newsapp.fragments.main
 
+import android.os.Parcelable
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -31,6 +32,12 @@ class NewsFragment : GenericFragment(), OnItemClickedListener {
     private lateinit var articleAdapter: ArticlesRecyclerViewAdapter
     private val apiService = NewsAPIService()
 
+    //--------- Restore state Vars ---------
+    private var items: ArrayList<Article>? = null
+
+    private var recyclerState: Parcelable? = null
+
+    //--------- Generic Vars ---------
     /**
      * True if there is currently news being loaded, False otherwise
      */
@@ -64,10 +71,22 @@ class NewsFragment : GenericFragment(), OnItemClickedListener {
 
     override fun readSavedInstanceState() { }
 
+    override fun saveInstanceState() { }
+
     override fun createView(view: View) {
         changeBottomNavigationVisibility(true)
         initRecyclerView()
         loadNews()
+    }
+
+    override fun onRestoringState() {
+        initRecyclerView()
+        recyclerView.layoutManager?.onRestoreInstanceState(recyclerState)
+    }
+
+    override fun updateVarsForPause() {
+        items = articleAdapter.getItems()
+        recyclerState = recyclerView.layoutManager?.onSaveInstanceState()
     }
 
     private fun loadNews() {
@@ -101,7 +120,7 @@ class NewsFragment : GenericFragment(), OnItemClickedListener {
     private fun initRecyclerView() {
         recyclerView.apply {
             layoutManager = LinearLayoutManager(activity)
-            articleAdapter = ArticlesRecyclerViewAdapter(this@NewsFragment)
+            articleAdapter = ArticlesRecyclerViewAdapter(this@NewsFragment, items)
             addItemDecoration(RecyclerSpacingItemDecoration(VerticalPadding, HorizontalPadding))
             adapter = articleAdapter
 
@@ -109,6 +128,8 @@ class NewsFragment : GenericFragment(), OnItemClickedListener {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     if (newState == SCROLL_STATE_IDLE && hasMoreNews && getLastVisibleItemIndex() >= articlesLoaded - ItemsLeftWhenLoad && !loading) {
                         loading = true
+                        val recyclerViewState = recyclerView.layoutManager?.onSaveInstanceState()
+                        recyclerView.layoutManager?.onRestoreInstanceState(recyclerViewState)
                         loadNews()
                     }
                 }

@@ -48,6 +48,16 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/articleUrl"
+            android:text="The article URL"
+            android:textColor="@color/hyper_link_color"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/description"
             android:text="The article description"
             android:textSize="17sp"

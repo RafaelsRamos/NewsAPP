@@ -8,7 +8,7 @@ class UIUtils {
 
     companion object {
 
-        fun LoadImageWithURL(context: Context, url: String, image: ImageView) {
+        fun loadImageWithURL(context: Context, url: String, image: ImageView) {
             Glide.with(context)
                 .load(url)
                 .into(image)

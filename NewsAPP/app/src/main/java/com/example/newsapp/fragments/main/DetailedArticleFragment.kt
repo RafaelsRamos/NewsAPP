@@ -12,12 +12,13 @@ import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
-private const val ARG_ARTICLE = "param1"
+
+private const val ARG_ARTICLE = "article_arg"
 
 class DetailedArticleFragment: GenericFragment() {
     override val TAG = DetailedArticleFragment::class.simpleName.toString()
 
-    private lateinit var article: Article
+    @Transient private lateinit var article: Article
 
     override fun getViewInt() = R.layout.fragment_detailed_article
 
@@ -25,23 +26,38 @@ class DetailedArticleFragment: GenericFragment() {
         arguments?.let { article = it.getSerializable(ARG_ARTICLE) as Article }
     }
 
+    override fun saveInstanceState() { }
+
     override fun createView(view: View) {
         changeBottomNavigationVisibility(false)
 
-        val date = LocalDate.parse(article.publishedAt, DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.from(ZoneOffset.UTC)))
+        val date = LocalDate.parse(
+            article.publishedAt, DateTimeFormatter.ISO_INSTANT.withZone(
+                ZoneId.from(
+                    ZoneOffset.UTC
+                )
+            )
+        )
 
         title.text = article.title
         source.text = String.format("%s - %s", article.source.name, date.toString())
         description.text = article.description
-        UIUtils.LoadImageWithURL(activityReference, article.urlToImage, image)
+        articleUrl.text = article.url
+        UIUtils.loadImageWithURL(activityReference, article.urlToImage, image)
+
+        articleUrl.setOnClickListener {
+            //activityReference.onBackPressed()
+            activityReference.redirect("http://www.google.com")
+        }
     }
+
+    override fun onRestoringState() { }
 
     companion object {
         /**
          * @param article   target article
          * @return          instance of DetailedArticleFragment
          */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(article: Article) =
             DetailedArticleFragment().apply {

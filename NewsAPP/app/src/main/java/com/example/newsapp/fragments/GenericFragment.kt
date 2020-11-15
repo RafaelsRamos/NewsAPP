@@ -8,36 +8,28 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.*
 import androidx.core.content.ContextCompat
-import com.example.newsapp.R
 import com.example.newsapp.activities.PrivateAreaActivity
+import java.io.Serializable
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [GenericFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-abstract class GenericFragment : Fragment() {
-
-    protected lateinit var activityReference: PrivateAreaActivity
+abstract class GenericFragment : Fragment(), Serializable {
 
     abstract val TAG: String
 
-    // TODO: Rename and change types of parameters
-    //private var param1: String? = null
-    //private var param2: String? = null
+    protected lateinit var activityReference: PrivateAreaActivity
+
+    /**
+     * True if the fragment came from backstack, False otherwise
+     */
+    protected var paused = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            readSavedInstanceState()
-            //param1 = it.getString(ARG_PARAM1)
-            //param2 = it.getString(ARG_PARAM2)
-        }
+        arguments?.let { readSavedInstanceState() }
     }
 
     override fun onAttach(context: Context) {
@@ -51,9 +43,23 @@ abstract class GenericFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        createView(requireView())
+        if (!paused) {
+            createView(requireView())
+        }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (paused) {
+            onRestoringState()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        updateVarsForPause()
+        paused = true
+    }
 
     /**
      * Get view Layout resource
@@ -64,7 +70,21 @@ abstract class GenericFragment : Fragment() {
 
     abstract fun readSavedInstanceState()
 
+    abstract fun saveInstanceState()
+
     abstract fun createView(view: View)
+
+    /**
+     * Method to update UI
+     * This method is called onResume. So, UI that should be be updated on return to fragment
+     * should be placed here
+     */
+    protected open fun onRestoringState() { }
+
+    /**
+     * Method to update Vars because the fragment is being paused
+     */
+    protected open fun updateVarsForPause() { }
 
     protected fun changeBottomNavigationVisibility(show: Boolean) {
         activityReference.changeBottomNavigationVisibility(show)

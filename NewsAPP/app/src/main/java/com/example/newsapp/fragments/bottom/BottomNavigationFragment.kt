@@ -11,6 +11,8 @@ class BottomNavigationFragment: GenericFragment() {
 
     override fun readSavedInstanceState() { }
 
+    override fun saveInstanceState() { }
+
     override fun createView(view: View) { }
 
 }

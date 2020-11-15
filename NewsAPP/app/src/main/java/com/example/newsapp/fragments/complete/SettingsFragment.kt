@@ -23,6 +23,8 @@ class SettingsFragment : GenericFragment() {
 
     override fun readSavedInstanceState() { }
 
+    override fun saveInstanceState() { }
+
     override fun createView(view: View) {
 
         if (languageSpinner != null) {

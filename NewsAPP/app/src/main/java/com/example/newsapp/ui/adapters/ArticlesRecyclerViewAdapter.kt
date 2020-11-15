@@ -10,9 +10,13 @@ import com.example.newsapp.callbacks.OnItemClickedListener
 import com.example.newsapp.data.newsapi.response.Article
 import kotlinx.android.synthetic.main.item_cardview.view.*
 
-class ArticlesRecyclerViewAdapter(private val listener: OnItemClickedListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ArticlesRecyclerViewAdapter(private val listener: OnItemClickedListener, private val preloadedItems: ArrayList<Article>?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var items: ArrayList<Article> = ArrayList()
+
+    init {
+        preloadedItems?.let { items = preloadedItems }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return ArticleViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_cardview, parent, false))
@@ -27,6 +31,9 @@ class ArticlesRecyclerViewAdapter(private val listener: OnItemClickedListener) :
     }
 
     override fun getItemCount() = items.size
+
+    @JvmName("getArticles")
+    fun getItems(): ArrayList<Article> = items
 
     fun submitList(articles: ArrayList<Article>) {
         items = articles

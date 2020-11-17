@@ -8,4 +8,9 @@
     </string-array>
 
     <string name="full_article">Full article</string>
+
+    <!-- pagers -->
+    <string name="hot_headlines">Full article</string>
+    <string name="everything">More</string>
+
 </resources>

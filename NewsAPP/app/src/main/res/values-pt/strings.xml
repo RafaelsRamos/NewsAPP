@@ -4,4 +4,8 @@
     <string name="title_activity_private_area">PrivateAreaActivity</string>
     <string name="full_article">Artigo completo</string>
 
+    <!-- pagers -->
+    <string name="hot_headlines">Machetes principais</string>
+    <string name="everything">Mais</string>
+
 </resources>

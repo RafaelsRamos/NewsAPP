@@ -41,7 +41,7 @@ class DetailedArticleFragment: GenericFragment() {
         articleUrl.setOnClickListener { activityReference.redirect(article.url) }
     }
 
-    override fun onRestoringState() { }
+    override fun onRestoreState() { }
 
     companion object {
         /**

@@ -10,8 +10,9 @@ import com.example.newsapp.R
 import com.example.newsapp.fragments.GenericFragment
 import com.example.newsapp.fragments.bottom.BottomNavigationFragment
 import com.example.newsapp.fragments.header.HeaderSearchFragment
-import com.example.newsapp.fragments.main.NewsFragment
 import com.example.newsapp.managers.ApplicationManager
+import com.example.newsapp.ui.adapters.viewpagers.TabFragmentStateAdapter
+import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.activity_private_area.*
 
 private const val BACK_STACK_ROOT_TAG = "root_fragment"
@@ -23,14 +24,25 @@ class PrivateAreaActivity : FragmentActivity() {
         setContentView(R.layout.activity_private_area)
         setConfigurations()
 
-        //redirect("http://www.google.com")
+        initializePager()
         setHeader()
         setBottomNavigation()
 
         changeBottomNavigationVisibility(true)
-        loadFragment(NewsFragment())
     }
 
+    /**
+     * Initialize pager
+     */
+    private fun initializePager()
+    {
+        viewpager.adapter = TabFragmentStateAdapter(supportFragmentManager,lifecycle)
+
+        val names:Array<String> = arrayOf(getString(R.string.hot_headlines), getString(R.string.everything))
+        TabLayoutMediator(tablayout,viewpager){tab, position ->
+            tab.text = names[position]
+        }.attach()
+    }
 
 
     private fun setHeader() {

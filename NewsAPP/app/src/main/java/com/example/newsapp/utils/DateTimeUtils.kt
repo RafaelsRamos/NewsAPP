@@ -10,6 +10,11 @@ class DateTimeUtils {
 
     companion object {
 
+        /**
+         * Converts String containing a date in "yyyy-MM-ddTHH:mm:ssZ" into datetime
+         * in a string of the following format "dd-Month abbreviated-yyyy HH:mm:ss
+         * Example: 15-Oct-2020 08:18:19
+         */
         @SuppressLint("SimpleDateFormat")
         @JvmStatic
         fun formatDateString(dateString: String) : String {

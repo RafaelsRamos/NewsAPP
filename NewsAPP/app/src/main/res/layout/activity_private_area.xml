@@ -7,15 +7,23 @@
     android:padding="@dimen/box_inset_layout_padding"
     tools:context=".activities.PrivateAreaActivity">
 
-    <FrameLayout
-        android:id="@+id/mainFrameLayout"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewpager"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:clickable="true"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationFrameLayout"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationFrameLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/headerFrameLayout" />
+        app:layout_constraintTop_toBottomOf="@id/tablayout" />
+
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tablayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerFrameLayout" />
 
     <FrameLayout
         android:id="@+id/headerFrameLayout"
@@ -35,5 +43,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:visibility="visible"/>
+
+    <FrameLayout
+        android:id="@+id/mainFrameLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

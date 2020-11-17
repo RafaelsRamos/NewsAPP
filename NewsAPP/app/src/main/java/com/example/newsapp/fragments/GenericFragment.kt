@@ -11,13 +11,7 @@ import androidx.core.content.ContextCompat
 import com.example.newsapp.activities.PrivateAreaActivity
 import java.io.Serializable
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 abstract class GenericFragment : Fragment(), Serializable {
-
     abstract val TAG: String
 
     protected lateinit var activityReference: PrivateAreaActivity
@@ -51,7 +45,7 @@ abstract class GenericFragment : Fragment(), Serializable {
     override fun onResume() {
         super.onResume()
         if (paused) {
-            onRestoringState()
+            onRestoreState()
         }
     }
 
@@ -79,16 +73,14 @@ abstract class GenericFragment : Fragment(), Serializable {
      * This method is called onResume. So, UI that should be be updated on return to fragment
      * should be placed here
      */
-    protected open fun onRestoringState() { }
+    protected open fun onRestoreState() { }
 
     /**
      * Method to update Vars because the fragment is being paused
      */
     protected open fun updateVarsForPause() { }
 
-    protected fun changeBottomNavigationVisibility(show: Boolean) {
-        activityReference.changeBottomNavigationVisibility(show)
-    }
+    protected fun changeBottomNavigationVisibility(show: Boolean) = activityReference.changeBottomNavigationVisibility(show)
 
     /**
      * Retrieve dimension from resources
@@ -100,15 +92,5 @@ abstract class GenericFragment : Fragment(), Serializable {
      */
     protected fun getDrawable(@DrawableRes res: Int) = ContextCompat.getDrawable(activityReference, res)
 
-
-    companion object {
-        //@JvmStatic
-        //fun newInstance(param1: String, param2: String) =
-        //    GenericFragment().apply {
-        //        arguments = Bundle().apply {
-        //            putString(ARG_PARAM1, param1)
-        //            putString(ARG_PARAM2, param2)
-        //        }
-        //    }
-    }
+    protected fun getColor(@ColorRes res: Int) = activity?.getColor(res)
 }

@@ -1,4 +1,4 @@
-package com.example.newsapp.ui.adapters
+package com.example.newsapp.ui.adapters.recyclers
 
 import android.view.LayoutInflater
 import android.view.View
@@ -43,6 +43,10 @@ class ArticlesRecyclerViewAdapter(private val listener: OnItemClickedListener, p
     fun addItems(articles: ArrayList<Article>) {
         items.addAll(articles)
         notifyDataSetChanged()
+    }
+
+    fun resetItems() {
+        items = ArrayList()
     }
 
     inner class ArticleViewHolder constructor(itemView: View): RecyclerView.ViewHolder(itemView) {

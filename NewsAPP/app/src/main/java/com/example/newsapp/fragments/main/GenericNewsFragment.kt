@@ -2,19 +2,21 @@ package com.example.newsapp.fragments.main
 
 import android.os.Parcelable
 import android.view.View
+import androidx.annotation.NonNull
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
-import com.example.newsapp.R
 import com.example.newsapp.callbacks.OnItemClickedListener
+import com.example.newsapp.data.newsapi.INewsLoader
 import com.example.newsapp.data.newsapi.NewsAPIService
+import com.example.newsapp.data.newsapi.NewsLoader
 import com.example.newsapp.data.newsapi.SearchType
 import com.example.newsapp.data.newsapi.SearchType.*
 import com.example.newsapp.data.newsapi.response.Article
+import com.example.newsapp.data.newsapi.response.NewsResponse
 import com.example.newsapp.fragments.GenericFragment
 import com.example.newsapp.ui.RecyclerSpacingItemDecoration
-import com.example.newsapp.ui.adapters.ArticlesRecyclerViewAdapter
-import kotlinx.android.synthetic.main.fragment_main_news.*
+import com.example.newsapp.ui.adapters.recyclers.ArticlesRecyclerViewAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -26,11 +28,13 @@ private const val VerticalPadding = 25
 private const val ItemsPerPage = 50
 private const val ItemsLeftWhenLoad = 15
 
-class NewsFragment : GenericFragment(), OnItemClickedListener {
-    override val TAG: String = NewsFragment::class.simpleName.toString()
+abstract class GenericNewsFragment : GenericFragment(), OnItemClickedListener, INewsLoader {
+    override val TAG: String = GenericNewsFragment::class.simpleName.toString()
 
     private lateinit var articleAdapter: ArticlesRecyclerViewAdapter
     private val apiService = NewsAPIService()
+
+    private lateinit var recyclerView: RecyclerView
 
     //--------- Restore state Vars ---------
     private var items: ArrayList<Article>? = null
@@ -67,20 +71,21 @@ class NewsFragment : GenericFragment(), OnItemClickedListener {
      */
     private var searchType = GENERIC
 
-    override fun getViewInt() = R.layout.fragment_main_news
+    private val newsLoader = NewsLoader(this)
 
-    override fun readSavedInstanceState() { }
+    //--------------- abstracts
 
-    override fun saveInstanceState() { }
+    protected abstract fun getRecycler(): RecyclerView
+
+    //--------------- end of abstracts
 
     override fun createView(view: View) {
         changeBottomNavigationVisibility(true)
+        recyclerView = getRecycler()
         initRecyclerView()
-        loadNews()
     }
 
-    override fun onRestoringState() {
-        initRecyclerView()
+    override fun onRestoreState() {
         recyclerView.layoutManager?.onRestoreInstanceState(recyclerState)
     }
 
@@ -89,28 +94,17 @@ class NewsFragment : GenericFragment(), OnItemClickedListener {
         recyclerState = recyclerView.layoutManager?.onSaveInstanceState()
     }
 
-    private fun loadNews() {
-        GlobalScope.launch(Dispatchers.Main) {
-            val news = when (searchType) {
-                GENERIC -> apiService.getNewsAsync(page = this@NewsFragment.page, pageSize = ItemsPerPage).await()
-                KEYWORD -> apiService.getNewsByKeywordAsync(keyWord, page = this@NewsFragment.page, pageSize = ItemsPerPage).await()
-                COUNTRY -> apiService.getNewsAsync(country, page = this@NewsFragment.page, pageSize = ItemsPerPage).await()
-                CATEGORY -> apiService.getNewsByCategoryAsync(category, page = this@NewsFragment.page, pageSize = ItemsPerPage).await()
-            }
-            addDataSet(ArrayList(news.articles))
-
-            hasMoreNews = news.articles.size == ItemsPerPage
-            articlesLoaded += news.articles.size
-            page++
-            loading = false
-        }
+    private fun loadMore() {
+        newsLoader.loadNews()
     }
 
-    fun changeSearchType(searchType: SearchType) {
-        this.searchType = searchType
-        page = 0
-        articlesLoaded = 0
-        hasMoreNews = true
+    protected fun searchByKeyword(@NonNull keyword: String) {
+        newsLoader.searchByKeyword(keyword)
+        articleAdapter.resetItems()
+    }
+
+    protected fun searchGeneric() {
+        newsLoader.searchGeneric()
     }
 
     private fun addDataSet(articles: ArrayList<Article>) {
@@ -120,7 +114,7 @@ class NewsFragment : GenericFragment(), OnItemClickedListener {
     private fun initRecyclerView() {
         recyclerView.apply {
             layoutManager = LinearLayoutManager(activity)
-            articleAdapter = ArticlesRecyclerViewAdapter(this@NewsFragment, items)
+            articleAdapter = ArticlesRecyclerViewAdapter(this@GenericNewsFragment, items)
             addItemDecoration(RecyclerSpacingItemDecoration(VerticalPadding, HorizontalPadding))
             adapter = articleAdapter
 
@@ -130,7 +124,7 @@ class NewsFragment : GenericFragment(), OnItemClickedListener {
                         loading = true
                         val recyclerViewState = recyclerView.layoutManager?.onSaveInstanceState()
                         recyclerView.layoutManager?.onRestoreInstanceState(recyclerViewState)
-                        loadNews()
+                        loadMore()
                     }
                 }
             }
@@ -145,5 +139,10 @@ class NewsFragment : GenericFragment(), OnItemClickedListener {
 
     override fun onItemClicked(position: Int) {
         activityReference.loadFragment(DetailedArticleFragment.newInstance(articleAdapter.items[position]))
+    }
+
+    override fun onNewsLoaded(response: NewsResponse) {
+        addDataSet(ArrayList(response.articles))
+        loading = false
     }
 }
